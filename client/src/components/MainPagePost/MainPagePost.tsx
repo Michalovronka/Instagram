@@ -1,15 +1,17 @@
 function MainPagePost() {
   return (
     <>
-      <div className="m-auto w-main-content-posts my-3">
+      <div className="justify-center mx-2 my-3 | md:w-main-content-posts">
+        
         <div className="flex items-center">
           <img
             src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp"
-            className="max-w-12 rounded-full p-2"
+            className="w-12 rounded-full p-2"
             alt=""
           />
           <div className="text-sm font-medium"> Creator 1</div>
         </div>
+
         <img
           src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp"
           className="rounded-sm"
