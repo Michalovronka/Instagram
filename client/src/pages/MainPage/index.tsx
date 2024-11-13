@@ -1,6 +1,7 @@
 import Navbar from "../../components/Navbar/Navbar";
 import MainPagePost from "../../components/MainPagePost/MainPagePost";
 import StoriesBar from "./StoriesBar";
+import React from "react";
 
 //TODO : make the switch account work (on the right side)
 //       make the posts load from database and load from it
@@ -31,7 +32,7 @@ function MainPage() {
 
         <div className="flex w-full gap-16 | md:justify-center md:mt-10 ">
           <div className="max-md:w-full max-md:flex max-md:flex-col ">
-            <div className="mx-0  flex gap-3 md:pb-2.5 border-b  border-b-slate-300 ">
+            <div className="mx-0  flex gap-3 md:pb-2.5 border-b border-b-slate-300 ">
               <button className="font-bold cursor-pointer | max-md:flex max-md:text-2xl max-md:mt-3 max-md:mb-4 max-md:ml-4 max-md:hover:bg-neutral-200">
                 For you
                 <div className="md:hidden | ml-2">v </div> {/* ONLCIK ADD HERE */}
@@ -76,15 +77,15 @@ function MainPage() {
             <div className="w-full font-[450] text-[11.25px] line text-stone-400 mb-6 leading-5 ">
               {instagramLinks.map((item, index) => {
                 return (
-                  <>
-                    <a key={index} className="hover:underline" href={item.link}>
+                  <React.Fragment key={`${item.keyword}-${index}`}>
+                    <a className="hover:underline" href={item.link}>
                       {item.keyword}
                     </a>
                     {index !== instagramLinks.length - 1 && (
                       <span>&nbsp;.&nbsp;</span>
                     )}
                     {index === 6 && <br />}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </div>
