@@ -19,8 +19,8 @@ const instagramLinks: InstagramLink[] = [
   { link: "https://about.instagram.com/about-us/careers", keyword: "Jobs" },
   {link: "https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect", keyword: "Privacy",},
   { link: "https://help.instagram.com/581066165581870/", keyword: "Terms" },
-  { link: "", keyword: "Locations" }, //https://www.instagram.com/explore/locations/
-  { link: "", keyword: "Laungage" }, //https://www.instagram.com/language/preferences/
+  { link: "https://www.instagram.com/explore/locations/", keyword: "Locations" }, //https://www.instagram.com/explore/locations/ mozna udelej nastaveni loool 
+  { link: "https://www.instagram.com/language/preferences/", keyword: "Laungage" }, //https://www.instagram.com/language/preferences/ mozna udelej nastaveni loool 
   {link: "https://accountscenter.instagram.com/meta_verified/?entrypoint=web_footer", keyword: "Meta Verified",}
 ];
 

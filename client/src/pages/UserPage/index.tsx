@@ -72,7 +72,7 @@ export default function UserPage() {
 
           <div className="mt-5 flex gap-20 justify-center text-sm">
             <button>POSTS</button>
-            <button>SAVED</button>
+            <button>SAVED</button> {/* WHEN LOGGED IN | AND ALSO ADD REELS */}
             <button>TAGGED</button>
           </div>
         </div>
