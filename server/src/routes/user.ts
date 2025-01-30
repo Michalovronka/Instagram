@@ -1,15 +1,8 @@
-import {Request, Response, NextFunction } from "express";
-import express from "express"; // maybe doesnt work
-
+import express from "express";
 const router = express.Router();
 
-router.get('/api/user/:id', function(req:Request, res:Response, next:NextFunction) {
-  res.render('index', { title: 'Express' });
-});
+router.get("/:userName");
+router.patch("/:userName");
+router.delete("/:userName"); 
 
-router.get("/", );
-router.get("/:id", );
-router.post("/", );
-
-module.exports = router;
-
+export default router;

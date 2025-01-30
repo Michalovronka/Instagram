@@ -21,6 +21,4 @@ const likesSchema = new mongoose.Schema({
 
 });
 
-//refType is built-in mongoose feature that allows us to reference different models based on the value of another field
-
 export default mongoose.model("Like", likesSchema);
