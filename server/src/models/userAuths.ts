@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import validator from 'validator';
+import validator from "validator";
 
 const userAuthsSchema = new mongoose.Schema({
   referencesUser: {
@@ -20,6 +20,13 @@ const userAuthsSchema = new mongoose.Schema({
     }
     //check for correct email string in front end 
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  refreshtoken: {
+    type: String,
+  }
 });
 
 export default mongoose.model("UserAuth", userAuthsSchema);
