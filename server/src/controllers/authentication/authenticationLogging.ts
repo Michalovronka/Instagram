@@ -1,23 +1,20 @@
 import bcrypt from "bcrypt"
 import UserAuth from "../../models/userAuths";
-import { createAccessToken, createRefreshToken, sendAccessToken, sendRefreshToken } from "./utils";
+import { createAccessToken, createRefreshToken, sendAccessToken, sendRefreshToken } from "./authenticationUtils";
 import { Response, Request, NextFunction } from "express";
 
-// Sign In request
-export const logIn = async (req: Request, res: Response, next: NextFunction) => {
+export const LogIn = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
     const userAuth = await UserAuth.findOne({ email: email });
-
     if (!userAuth)
       return res.status(500).json({
         message: "userAuth doesnt exist",
-        type: "error",
       });
-    const isMatch = await bcrypt.compare(password, userAuth.password);
-    if (!isMatch)
+    const isValidPassword = await bcrypt.compare(password, userAuth.password);
+    if (!isValidPassword)
       return res.status(500).json({
-        message: "Password is incorrect! ⚠️",
+        message: "Password is incorrect",
         type: "error",
       });
     const accessToken = createAccessToken(userAuth._id);
@@ -25,13 +22,20 @@ export const logIn = async (req: Request, res: Response, next: NextFunction) => 
     userAuth.refreshtoken = refreshToken;
     await userAuth.save();
     
+    console.log(`User with email ${email} logged in`);
     sendRefreshToken(res, refreshToken);
-    sendAccessToken(res, accessToken);
+    return sendAccessToken(res, accessToken);
   } catch (error) {
     res.status(500).json({
-      type: "error",
-      message: "Error signing in!",
+      message: "Error with logging in",
       error,
     });
   }
 };
+
+export const LogOut = async (req: Request, res: Response, next: NextFunction) => {
+  res.clearCookie("refreshtoken");
+  return res.json({
+    message: "Log out successful"
+  });
+}

@@ -10,7 +10,7 @@ import { saveFileIntoFolder, deletePhoto } from "./pfpFileUploadUtils";
 
 //POST USER, USERAUTH, PROFILE 
 
-const registerUser = [saveFileIntoFolder, async (req: Request, res: Response, next: NextFunction) => {
+export const registerUser = [saveFileIntoFolder, async (req: Request, res: Response, next: NextFunction) => {
   const { userName, displayName, email, password } = req.body;
   let currentUser;
 
@@ -70,6 +70,5 @@ const registerUser = [saveFileIntoFolder, async (req: Request, res: Response, ne
     return res.status(500).json({ message: 'Error creating profile', error: error.message });
   }
 
+  next();
 }];
-
-export default registerUser;

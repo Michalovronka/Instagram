@@ -10,6 +10,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 
 import usersRouter from "./routes/user";
+import authenticationRouter from "./routes/authentication"
 
 const app: Express = express();
 const PORT = 3000;
@@ -20,18 +21,22 @@ mongoose
 .then(() => console.log("Database connected"))
 .catch((err:Error) => console.log(err));
 
-app.use(cors());
-
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true, 
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//check if paths are correct no sure if they are 
 app.use('/api/user/', usersRouter);
+app.use('/api/auth/', authenticationRouter);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
-app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req:Request, res:Response, next:NextFunction) {
   next(createError(404));

@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 const filter = (req: Request, file: Express.Multer.File, cb:any) => {
   file.mimetype === "image/png" ||
   file.mimetype === "image/jpeg" ||
-  file.mimetype === "image/webp"
+  file.mimetype === "image/webp" ||
   file.mimetype === "video/mp4"
     ? cb(null, true)
     : cb(new Error("Invalid file format. Only JPEG, PNG, WEBP and MP4 are allowed"));
