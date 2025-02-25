@@ -18,16 +18,18 @@ export const registerUser = [saveFileIntoFolder, async (req: Request, res: Respo
     req.file = { filename: "Default_pfp.png" } as Express.Multer.File;
   }
   const existingUser = await User.findOne({ userName });
+
   if (existingUser) {
     await deletePhoto(path.join(__dirname, `../../../public/pfps/${req.file.filename}`));
     return res.status(400).send("Username exists");
   }
+  
   const existingEmail = await UserAuth.findOne({ email });
   if (existingEmail) {
     await deletePhoto(path.join(__dirname, `../../../public/pfps/${req.file.filename}`));
     return res.status(400).send("Email exists");
   }
-
+ 
   try{
     const newUser = new User({
       userName, 
@@ -38,7 +40,7 @@ export const registerUser = [saveFileIntoFolder, async (req: Request, res: Respo
     currentUser = newUser;
   }
   catch(error: any){
-    //console.error(error);
+    console.error(error);
     return res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 
@@ -52,7 +54,7 @@ export const registerUser = [saveFileIntoFolder, async (req: Request, res: Respo
     });
     await newUserAuth.save();
   } catch (error: any) {
-    //console.error(error);
+    console.error(error);
     await deletePhoto(path.join(__dirname, `../../../public/pfps/${req.file.filename}`));
     await User.findByIdAndDelete(currentUser._id);
     return res.status(500).json({ message: 'Error registering user', error: error.message });
@@ -63,12 +65,12 @@ export const registerUser = [saveFileIntoFolder, async (req: Request, res: Respo
       user: currentUser._id
     });
     await newProfile.save();
-    res.status(201).json({ message: 'User and Profile created successfully', user: currentUser});
+    console.log("User was created")
+    return res.status(201).json({ message: 'User and Profile created successfully', user: currentUser});
   }
   catch(error: any){
-    //console.error(error);
+    console.error(error);
     return res.status(500).json({ message: 'Error creating profile', error: error.message });
   }
 
-  next();
 }];

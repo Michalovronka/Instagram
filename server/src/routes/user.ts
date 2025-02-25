@@ -9,8 +9,8 @@ const router = express.Router();
 
 router.get("/:userName", getUser as any);
 router.patch("/updateInfo/:userNameParam", updateUser as any);
-router.patch("/updatePfp/:userName", updatePfp as any);
-router.post("/registration", registerUser, LogIn as any);
+router.patch("/updatePfp/:userName", updatePfp);
+router.post("/registration", registerUser);
 router.delete("/:userName", deleteUser as any); 
 
 export default router;

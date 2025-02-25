@@ -95,7 +95,7 @@ function MainPage() {
               <form className="flex flex-col px-12 gap-2">
                 <input type="text" name="emailLogin" required placeholder="Email" onChange={handleChange} className="border border-slate-300 rounded p-1.5 text-black placeholder-slate-300 bg-slate-100"/>
                 <input type="password" name="passwordLogin" required placeholder="Heslo" onChange={handleChange} className="border border-slate-300 rounded p-1.5 text-black placeholder-slate-300 bg-slate-100" />
-                <button onClick={handlePost} className="bg-sky-400 text-white font-medium text-sm rounded-md p-1.5 mt-1.5">
+                <button onClick={handlePost} className="hover:bg-blue-500 bg-sky-400 text-white font-medium text-sm rounded-md p-1.5 mt-1.5">
                     Přihásit se
                 </button>
               </form>

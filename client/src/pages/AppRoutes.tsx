@@ -3,6 +3,7 @@ import MainPage from "./MainPage";
 import Error from "./Error";
 import UserPage from "./UserPage";
 import ExplorePage from "./ExplorePage";
+import RegisterPage from "./RegisterPage";
 
 
 export default function Approutes(){
@@ -11,8 +12,9 @@ export default function Approutes(){
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<MainPage/>}/>
-                <Route path="/explore/" element={<ExplorePage/>}/>
+                <Route path="/accounts/emailsignup/" element={<RegisterPage/>}/>
                 <Route path="/:id" element={<UserPage/>}/>
+                <Route path="/explore/" element={<ExplorePage/>}/>
                 <Route path="*" element={<Error/>}/>
             </Routes>
         </BrowserRouter>
