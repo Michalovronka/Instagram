@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 //TODO: Make erorrs from backend work ( so they go into info)
 //      Facebook login (no)
-//      Make the blue button, downolad app and ipnut fields into component and also the bar tht is on the bottom
+//      Make downolad app into component and also the bar tht is on the bottom
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [info, setInfo] = useState<string | null>(null);
@@ -44,6 +44,10 @@ export default function RegisterPage() {
     }
     try {
       await api.post("/user/registration", formDataToSend);
+      await api.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
       navigate("/");
     } catch (err: unknown) {
       const error = err as {
@@ -126,7 +130,7 @@ export default function RegisterPage() {
               />
 
               <div className="border mb-2 px-2 py-2.5 border-slate-300 rounded bg-slate-100 text-slate-500">
-                <p className="mb-2">Profilový Obrázek: </p>
+                <p className="mb-2">Profilový Obrázek: (nepovinný)</p>
                 <input
                   className="hover:bg-blue-500 hover:cursor-pointer w-full bg-sky-400 text-white font-medium text-sm rounded-md p-1.5"
                   type="file"
