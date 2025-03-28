@@ -35,41 +35,25 @@ export const sendRefreshToken = (res: Response, refreshtoken: string) => {
   });
 };
 
-export const GetUserIdByAuth = async (
+export const getUserfromToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  if (!process.env.ACCESS_TOKEN_SECRET)
-    return res.status(500).json({ message: "Server Token Error" });
-
   const refreshToken = req.cookies.refreshToken;
-  const authorization = req.headers.authorization;
-  if (!authorization) return res.status(401).json({ message: "Token Error" });
-
-  const token = authorization.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Token Error" });
-
-  let payload: JwtPayload & { id: string };
-  try {
-    payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as JwtPayload & {
-      id: string;
-    };
-    console.log(payload.id);
-  } catch {
-    return res.status(401).json({ message: "Token Error" });
+  if (!refreshToken) {
+    return res.status(401).json({ error: "No refresh token found" });
   }
-  
-  const userAuth = await UserAuth.findById(payload.id);
-  if (!userAuth)
-    return res.status(401).json({ message: "UserAuth doesn't exist" });
 
-  const user = await User.findById(userAuth.referencesUser);
-  if (!user) return res.status(401).json({ message: "User doesn't exist" });
-
-  req.userId = user._id.toString();
-  console.log(`${user.userName} authenticited`);
-  next();
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
+    const userAuth = await UserAuth.findById(decoded.id);
+    if(!userAuth) return res.status(404).json({error: "User doesn't exists"});
+    req.userId = userAuth.referencesUser.toString();
+    next();
+  } catch (err) { 
+    return res.status(403).json({ error: "Invalid token" });
+  }
 };
 
 
@@ -89,8 +73,7 @@ export const Verify = async (req: Request, res: Response) => {
   const refreshToken = req.cookies?.refreshToken;
   if (!refreshToken) {
     return res.status(401).json({ message: "No token" });
-  }
-
+  }   
   try {
     const decoded = await verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET as string);
     if (!decoded.id) {
@@ -100,8 +83,12 @@ export const Verify = async (req: Request, res: Response) => {
     const userAuth = await UserAuth.findById(decoded.id);
     if (!userAuth) return res.status(404).json({ message: "UserAuth doesn't exist" });
     
+    const user = await User.findOne(userAuth.referencesUser);
+    if(!user) return res.status(404).json({message: "User doesn't exists"})
+
     const newAccessToken = createAccessToken(new mongoose.Types.ObjectId(decoded.id));
-    res.json({ accessToken: newAccessToken });
+    res.json({ accessToken: newAccessToken});
+    
   } catch (error) {
     res.status(401).json({ message: "Invalid refresh token" });
   }

@@ -52,8 +52,8 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const error = err as {
         message?: string;
-      };
-      console.log(error.message || "Login failed");
+      }
+      setInfo(error.message || "Login failed");
     }
   };
 

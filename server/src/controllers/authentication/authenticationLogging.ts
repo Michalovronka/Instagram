@@ -9,7 +9,7 @@ export const LogIn = async (req: Request, res: Response, next: NextFunction) => 
     const userAuth = await UserAuth.findOne({ email: email });
     if (!userAuth)
       return res.status(500).json({
-        message: "userAuth doesnt exist",
+        message: "User doesn't exist",
       });
     const isValidPassword = await bcrypt.compare(password, userAuth.password);
     if (!isValidPassword)

@@ -11,6 +11,7 @@ import mongoose from "mongoose";
 
 import usersRouter from "./routes/user";
 import authenticationRouter from "./routes/authentication"
+import profileRouter from "./routes/profile"
 
 const app: Express = express();
 const PORT = 3000;
@@ -32,12 +33,15 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/user/', usersRouter);
 app.use('/api/auth/', authenticationRouter);
+app.use('/api/profile/', profileRouter);
+
+app.use("/pfps", express.static(path.join(__dirname, `../public/pfps/`)));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));  
 app.use(function(req:Request, res:Response, next:NextFunction) {
   next(createError(404));
 });

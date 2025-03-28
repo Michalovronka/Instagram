@@ -12,6 +12,9 @@ export default {
         'main-content':'39rem',
         'main-content-posts':'29rem'
       },
+      fontFamily: {
+        grandhotel: ["Grand Hotel"]
+      },
     },
   },
   plugins: [],

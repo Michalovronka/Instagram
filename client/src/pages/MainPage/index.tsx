@@ -4,13 +4,25 @@ import StoriesBar from "./StoriesBar";
 import DownloadSection from "../../components/DownloadSection/DownloadSection";
 import React, { useEffect, useState } from "react";
 import api from "../../api";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../../store";
-import { setLogInAuth } from "../../slices/AuthSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 import { Link } from "react-router-dom";
+import { shallowEqual } from "react-redux";
+import useAuthentication from "../../hooks/useAuthentication";
 
 //TODO : make the switch account work (on the right side)
 //       make the posts load from database and load from it
+
+
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
+//fix image src plss :)
 
 interface InstagramLink {
   link: string;
@@ -48,33 +60,22 @@ const loginLinks: InstagramLink[] = [
 ];
 
 function MainPage() {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.value);
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  
+  const isAuthenticated = useSelector((state: RootState) => state.auth.value, shallowEqual);
+  const loggedInUser = useSelector((state: RootState) => state.loggedInUser);
+  const [errorInfo, setErrorInfo] = useState<String>("");
   const [formData, setFormData] = useState({
     emailLogin: "",
     passwordLogin: "",
-  });
+  });                      
 
-  //neco neco strictmode dava 2x proste
+  const { isLoading, authenticateUser } = useAuthentication();
+
   useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        await api.post("/auth/getToken");
-        dispatch(setLogInAuth());
-        setIsLoading(false);
-      } catch (err: unknown) {
-        setIsLoading(false);
-        const error = err as {
-          message?: string;
-        };
-        console.log(error.message || "Token not found ");
-      }
-    };
-    fetchToken();
-  }, []);
+    console.log("Updated user:", loggedInUser);
+  }, [loggedInUser]); 
 
+ 
   const postForm = async () => {
     if (!formData) return;
     try {
@@ -82,12 +83,12 @@ function MainPage() {
         email: formData.emailLogin,
         password: formData.passwordLogin,
       });
-      dispatch(setLogInAuth());
+      authenticateUser(); 
     } catch (err: unknown) {
       const error = err as {
         message?: string;
       };
-      console.log(error.message || "Login failed");
+      setErrorInfo(error.message || "Login failed");
     }
   };
 
@@ -113,7 +114,7 @@ function MainPage() {
           />
           <div className="w-1/2 mx-7 text-sm">
             <div className="border border-slate-300">
-              <div className="p-11 text-5xl m-auto text-center">Instagram</div>
+              <div className="font-grandhotel p-11 text-5xl m-auto text-center">Instagram</div>
 
               <form className="flex flex-col px-12 gap-2">
                 <input
@@ -138,6 +139,7 @@ function MainPage() {
                 >
                   Přihásit se
                 </button>
+                <p className="text-red-600">{errorInfo}</p>
               </form>
 
               <div className="flex mx-12 gap-4 mt-6">
@@ -187,6 +189,7 @@ function MainPage() {
     );
   }
 
+  //dejto aby tu ukazovalu username
   if (isAuthenticated && !isLoading) {
     return (
       <>
@@ -229,12 +232,12 @@ function MainPage() {
             <div className="hidden | min-[1111px]:flex h-48  flex-col w-[19.25rem] p-2 pt-4 text-sm font-semibold">
               <div className="w-full flex flex-row gap-2 justify-center items-center mb-8">
                 <img
-                  className="w-11 h-11"
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+                  className="w-11 h-11 rounded-full"
+                  src={`${loggedInUser.pfpSrc}`}
                 />
                 <div className="flex-col">
-                  <div>Username</div>
-                  <div className="text-stone-400">Jmenuju se</div>
+                  <div>{loggedInUser.userName}</div>
+                  <div className="text-stone-400">{loggedInUser.displayName}</div>
                 </div>
                 <button className="ml-auto h-12 text-blue-500 text-xs text-normal">
                   Switch
@@ -269,7 +272,6 @@ function MainPage() {
   }
   return (
     <>
-      {" "}
       <div className="flex items-center justify-center h-screen text-3xl -mt-16">
         Loading...
       </div>

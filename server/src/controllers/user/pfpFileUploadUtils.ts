@@ -1,11 +1,8 @@
-import User from "../../models/users";
-import UserAuth from "../../models/userAuths";
+
 import pfpController from "./pfpController";
 import { Response, Request, NextFunction } from "express";
-import bcrypt from "bcrypt"; 
 import fs from "fs";
 import path from "path";
-import Profile from "../../models/profiles";
 
 const userPfp = pfpController.single("pfpFile");
 

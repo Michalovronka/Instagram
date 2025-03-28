@@ -16,12 +16,15 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    const { userName } = req.params;
-    const user = await User.findOne({ userName: userName });
+    let user;
+    
+    if (req.params.username) user = await User.findOne({ userName: req.params.username });
+    else if (req.userId) user = await User.findById(req.userId);
     if (user) {
       return res.status(200).json({
-        payload: user,
-        msg: "User found!",
+        userName:user.userName,
+        displayName:user.displayName,
+        pfpSrc:user.pfpSrc
       });
     }
     res.status(404).json({ msg: "User not found" });
@@ -118,7 +121,7 @@ export const updatePfp = [
   
       const updateUser = await User.findOneAndUpdate(
         { userName: req.params.userName },
-        { pfpSrc: `http://localhost:3000/pfp/${req.file.filename}`},
+        { pfpSrc: `http://localhost:3000/pfps/${req.file.filename}`},
         { new: true }
       );
 

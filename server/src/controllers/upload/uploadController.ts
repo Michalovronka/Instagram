@@ -1,11 +1,8 @@
 import User from "../../models/users";
-import UserAuth from "../../models/userAuths";
 import { Response, Request, NextFunction } from "express";
 import uploadFileController from "./uploadFileController";
-import bcrypt from "bcrypt";
 import path from "path";
 import fs from "fs";
-import Profile from "../../models/profiles";
 import Upload from "../../models/content/uploads";
 
 //GET, DELETE & UPDATE POST UPLOAD
@@ -69,7 +66,7 @@ const createUpload = [
 ];
 
 //probably works 100%
-export const getUser = async (
+export const getUpload = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -94,7 +91,7 @@ export const getUser = async (
 
 
 //probably works 100%
-export const deleteUser = async (
+export const deleteUpload = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -124,7 +121,7 @@ export const deleteUser = async (
 
 //IN POSTMAN SWITCH TO X-WWW-FORM-URLENCODED OR RAW
 //idk if i need it check if you can even update it on ig
-export const updateUser = async (
+export const updateUpload = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -149,5 +146,3 @@ export const updateUser = async (
     res.status(500).json({ error: "Something went wrong" });
   }
 };
-
-export default createUpload;

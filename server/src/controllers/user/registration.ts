@@ -34,14 +34,14 @@ export const registerUser = [saveFileIntoFolder, async (req: Request, res: Respo
     const newUser = new User({
       userName, 
       displayName,
-      pfpSrc: "http://localhost:3000/pfp/" + req.file.filename
+      pfpSrc: "http://localhost:3000/pfps/" + req.file.filename
     });
     await newUser.save();
     currentUser = newUser;
   }
   catch(error: any){
     console.error(error);
-    return res.status(500).json({ message: 'Error registering user', error: error.message });
+    return res.status(500).json({ message: "Couldn't create the user", error: error.message });
   }
 
   try {
@@ -57,7 +57,7 @@ export const registerUser = [saveFileIntoFolder, async (req: Request, res: Respo
     console.error(error);
     await deletePhoto(path.join(__dirname, `../../../public/pfps/${req.file.filename}`));
     await User.findByIdAndDelete(currentUser._id);
-    return res.status(500).json({ message: 'Error registering user', error: error.message });
+    return res.status(500).json({ message: "There is something wrong with the email", error: error.message });
   }
 
   try{

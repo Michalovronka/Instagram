@@ -58,7 +58,7 @@ function Navbar() {
           <NavbarButton
             src="https://static-00.iconduck.com/assets.00/settings-icon-1024x1022-x2c1qvd9.png"
             text="Instagram"
-            responsiveClasses="max-md:hidden"
+            responsiveClasses="max-md:hidden font-grandhotel text-3xl"
             logoCSS=" text-2xl md:mb-6 xl:hover:bg-white"
             logoImg="xl:hidden"
           />

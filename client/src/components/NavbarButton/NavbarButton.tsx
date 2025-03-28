@@ -1,4 +1,6 @@
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../store";
 
 export type NavbarButtonProps = {
   src: string;
@@ -22,6 +24,7 @@ export type navbarItemsType =
   | "More";
 
 function NavbarButton(props: NavbarButtonProps) {
+  const loggedInUser = useSelector((state: RootState) => state.loggedInUser);
   const navigate = useNavigate();
 
   function handleOnClick() {
@@ -50,7 +53,7 @@ function NavbarButton(props: NavbarButtonProps) {
       case "Create":
         break;
       case "Profile":
-        navigate("/:id");
+        navigate(`/${loggedInUser.userName}`, { replace: true });
         window.scrollTo({
           top: 0,
         });
@@ -59,7 +62,7 @@ function NavbarButton(props: NavbarButtonProps) {
         break;
       case "More":
         break;
-    }
+    } 
   }
 
   return (

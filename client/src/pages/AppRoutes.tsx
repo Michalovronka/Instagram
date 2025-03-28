@@ -13,7 +13,7 @@ export default function Approutes(){
             <Routes>
                 <Route path="/" element={<MainPage/>}/>
                 <Route path="/accounts/emailsignup/" element={<RegisterPage/>}/>
-                <Route path="/:id" element={<UserPage/>}/>
+                <Route path="/:username" element={<UserPage/>}/>
                 <Route path="/explore/" element={<ExplorePage/>}/>
                 <Route path="*" element={<Error/>}/>
             </Routes>

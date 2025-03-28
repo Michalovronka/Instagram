@@ -5,7 +5,7 @@ function Error() {
         <>
         <div className="flex">
             <Navbar />
-            DOesnt work broooo0000000000000000000000000000000000000000000000000000000000000000000oooo00000000000000000
+            <div className="lg:-mt-20 mt-4 flex justify-center items-center mx-auto text-6xl"> Error has Ocurred</div>
         </div>
         </>
     );

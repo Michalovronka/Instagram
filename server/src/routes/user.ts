@@ -7,10 +7,10 @@ const router = express.Router();
 
 //TODO: make authentication work (no userNames only in get)
 
-router.get("/:userName", getUser as any);
-router.patch("/updateInfo/:userNameParam", updateUser as any);
-router.patch("/updatePfp/:userName", updatePfp);
+router.get("/:username", getUser as any);
+router.patch("/updateInfo/:username", updateUser as any);
+router.patch("/updatePfp/:username", updatePfp);
 router.post("/registration", registerUser);
-router.delete("/:userName", deleteUser as any); 
+router.delete("/:username", deleteUser as any); 
 
 export default router;
