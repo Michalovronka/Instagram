@@ -33,26 +33,28 @@ const deletePhoto = async (filePath: string) => {
   }
 };
 
-const createUpload = [
+export const createUpload = [
   saveFileIntoFolder,
   async (req: Request, res: Response, next: NextFunction) => {
-    const { description } = req.body;
+
+    const { uploadedByUserName, description } = req.body;
+    console.log(uploadedByUserName, description)
     if (!req.file) {
       return res.status(500).json({ message: "File didn't upload" });
     }
-
-    //authentication will change this so i dont have to find user  pls
-    const existingUser = await User.findOne({ userName: req.params.userName });
-    if (!existingUser) {
-      return res.status(404).send("neni");
+    const user = await User.findOne({ userName: uploadedByUserName });
+    if (!user) {
+      return res.status(404).send("User not found");
     }
+    console.log(user)
     try {
-      const newUpload = new Upload({
-        uploadedBy: existingUser._id,
+      const upload = new Upload({
+        uploadedBy: user._id,
         description,
         contentSrc: "http://localhost:3000/upload/" + req.file.filename,
       });
-      await newUpload.save();
+      await upload.save();
+      return res.status(200).send("Upload crearted");
     } catch (error: any) {
       //console.error(error);
       await deletePhoto(

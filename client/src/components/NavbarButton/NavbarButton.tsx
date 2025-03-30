@@ -51,6 +51,10 @@ function NavbarButton(props: NavbarButtonProps) {
       case "Notifications":
         break;
       case "Create":
+        navigate("/upload")
+        window.scrollTo({
+          top: 0,
+        });
         break;
       case "Profile":
         navigate(`/${loggedInUser.userName}`, { replace: true });

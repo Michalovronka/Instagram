@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 //TODO: Make erorrs from backend work ( so they go into info)
 //      Facebook login (no)
 //      Make downolad app into component and also the bar tht is on the bottom
+
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [info, setInfo] = useState<string | null>(null);
@@ -23,7 +25,6 @@ export default function RegisterPage() {
   });
 
   const postForm = async () => {
-    console.log("click");
     if (
       !formData.userName ||
       !formData.displayName ||
@@ -42,6 +43,7 @@ export default function RegisterPage() {
     if (formData.pfpFile) {
       formDataToSend.append("pfpFile", formData.pfpFile);
     }
+
     try {
       await api.post("/user/registration", formDataToSend);
       await api.post("/auth/login", {

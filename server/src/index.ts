@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 import usersRouter from "./routes/user";
 import authenticationRouter from "./routes/authentication"
 import profileRouter from "./routes/profile"
+import uploadRouter from "./routes/upload"
 
 const app: Express = express();
 const PORT = 3000;
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/user/', usersRouter);
 app.use('/api/auth/', authenticationRouter);
 app.use('/api/profile/', profileRouter);
+app.use('/api/upload/', uploadRouter);
 
 app.use("/pfps", express.static(path.join(__dirname, `../public/pfps/`)));
 

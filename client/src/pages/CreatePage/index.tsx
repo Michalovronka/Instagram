@@ -1,8 +1,10 @@
 
 export default function CreatePage() {
   return (
-    <div>
-      
-    </div>
+    <>
+      <button>Upload</button>
+      <button>Story</button>
+      <button>Reels</button>
+    </>
   )
 }

@@ -2,7 +2,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import MainPagePost from "../../components/MainPagePost/MainPagePost";
 import StoriesBar from "./StoriesBar";
 import DownloadSection from "../../components/DownloadSection/DownloadSection";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import api from "../../api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -70,11 +70,6 @@ function MainPage() {
   });                      
 
   const { isLoading, authenticateUser } = useAuthentication();
-
-  useEffect(() => {
-    console.log("Updated user:", loggedInUser);
-  }, [loggedInUser]); 
-
  
   const postForm = async () => {
     if (!formData) return;
@@ -160,11 +155,10 @@ function MainPage() {
             </div>
             <div>
               <div className="mt-2 p-5 text-center border border-slate-300 ">
-                {" "}
-                Nemáte účet?{" "}
+                Nemáte účet?
                 <Link to={"/accounts/emailsignup/"} className="text-sky-400 font-medium">
                   Zaregistrujte se
-                </Link>{" "}
+                </Link>
               </div>
             </div>
             <DownloadSection />
