@@ -4,6 +4,7 @@ import uploadFileController from "./uploadFileController";
 import path from "path";
 import fs from "fs";
 import Upload from "../../models/content/uploads";
+import mongoose from "mongoose";
 
 //GET, DELETE & UPDATE POST UPLOAD
 // need some authentiacaion middleware that check if you can delete i think
@@ -36,9 +37,8 @@ const deletePhoto = async (filePath: string) => {
 export const createUpload = [
   saveFileIntoFolder,
   async (req: Request, res: Response, next: NextFunction) => {
-
     const { uploadedByUserName, description } = req.body;
-    console.log(uploadedByUserName, description)
+    console.log(uploadedByUserName, description);
     if (!req.file) {
       return res.status(500).json({ message: "File didn't upload" });
     }
@@ -46,12 +46,12 @@ export const createUpload = [
     if (!user) {
       return res.status(404).send("User not found");
     }
-    console.log(user)
+    console.log(user);
     try {
       const upload = new Upload({
         uploadedBy: user._id,
         description,
-        contentSrc: "http://localhost:3000/upload/" + req.file.filename,
+        contentSrc: "http://localhost:3000/uploads/" + req.file.filename,
       });
       await upload.save();
       return res.status(200).send("Upload crearted");
@@ -67,7 +67,7 @@ export const createUpload = [
   },
 ];
 
-//probably works 100%
+
 export const getUpload = async (
   req: Request,
   res: Response,
@@ -78,8 +78,11 @@ export const getUpload = async (
     const upload = await Upload.findOne({ _id: id });
     if (upload) {
       return res.status(200).json({
-        payload: upload,
-        msg: "Upload found!",
+        contentSrc: upload.contentSrc,
+        description: upload.description,
+        dateOfCreation: upload.dateOfCreation,
+        numberOfComments: upload.numberOfComments,
+        numberOfLikes: upload.numberOfLikes,
       });
     }
     res.status(404).json({ msg: "Upload not found" });
@@ -91,6 +94,28 @@ export const getUpload = async (
   }
 };
 
+export const getAllUploadsByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { username } = req.params
+    const user = await User.findOne({ userName: username });
+    if(!user) return res.status(404).send("User not found");
+    console.log(user._id)
+
+    const uploads = await Upload.find({ uploadedBy: user._id });
+    if(!uploads) return res.status(404).send("Uploads not found");
+    const uploadsId = uploads.map((upload) => upload._id);
+    return res.status(200).json(uploadsId);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      error: error,
+    });
+  }
+};
 
 //probably works 100%
 export const deleteUpload = async (
@@ -132,7 +157,7 @@ export const updateUpload = async (
   const { description } = req.body;
   try {
     const updatedUpload = await Upload.findOneAndUpdate(
-      { _id: id},
+      { _id: id },
       { description },
       { new: true }
     );

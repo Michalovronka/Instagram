@@ -7,15 +7,9 @@ const likesSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  likeOnType: {
-    type: String,
-    enum: ["Upload", "Reel", "Comment"],
-    required: true,
-  },
   likeOnId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    refPath: "contentType",
   },
   dateOfCreation: { type: Date, required: true, default: Date.now },
 

@@ -15,10 +15,11 @@ const uploadsSchema = new mongoose.Schema({
       },
       message: "Description must be between 0 and 200 characters long.",
     },
+    default: ""
   },
-  dateOfCreation: { type: Date, required: true, default: Date.now },
-  numberOfComments: { type: Number, required: true, default: 0 },
-  numberOfLikes: { type: Number, required: true, default: 0 },
+  dateOfCreation: { type: Date, default: Date.now },
+  numberOfComments: { type: Number, default: 0 },
+  numberOfLikes: { type: Number, default: 0 },
 });
 
 export default mongoose.model("Upload", uploadsSchema);

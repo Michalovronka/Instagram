@@ -7,20 +7,14 @@ const commentsSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  commentOnType: {
-    type: String,
-    enum: ["Upload", "Reel", "Comment"],
-    required: true,
-  },
   commentOnId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     refPath: "contentType",
   },
-
   text: { type: String, required: true },
-  dateOfCreation: { type: Date, required: true, default: Date.now },
-
+  dateOfCreation: { type: Date, default: Date.now },
+  numberOfLikes: { type: Number, default: 0 },
 });
 
 export default mongoose.model("Comment", commentsSchema);

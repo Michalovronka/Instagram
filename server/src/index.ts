@@ -13,6 +13,8 @@ import usersRouter from "./routes/user";
 import authenticationRouter from "./routes/authentication"
 import profileRouter from "./routes/profile"
 import uploadRouter from "./routes/upload"
+import commentRouter from "./routes/comment"
+import likeRouter from "./routes/like"
 
 const app: Express = express();
 const PORT = 3000;
@@ -36,8 +38,11 @@ app.use('/api/user/', usersRouter);
 app.use('/api/auth/', authenticationRouter);
 app.use('/api/profile/', profileRouter);
 app.use('/api/upload/', uploadRouter);
+app.use('/api/comment/', commentRouter);
+app.use('/api/like/', likeRouter);
 
 app.use("/pfps", express.static(path.join(__dirname, `../public/pfps/`)));
+app.use("/uploads", express.static(path.join(__dirname, `../public/uploads/`)));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

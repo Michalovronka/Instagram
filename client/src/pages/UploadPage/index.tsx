@@ -78,7 +78,6 @@ export default function UploadPage() {
     formDataToSend.append("description", formData.description);
     formDataToSend.append("uploadFile", formData.uploadFile!);
 
-    // mystrey ahh error kurva nevim proc saveuje se to daftaze ale navigate nefuguje
     try {
       await api.post("/upload/createUpload", formDataToSend);
       navigate(`/${loggedInUser.userName}`);
@@ -132,7 +131,7 @@ export default function UploadPage() {
                   placeholder="Description"
                   onChange={handleChange}
                   rows={3}
-                  className="border border-slate-300 rounded px-2 py-2.5 bg-slate-100"
+                  className="border border-slate-300 rounded px-2 py-2.5 bg-slate-100 resize-none"
                 ></textarea>
 
                 <button

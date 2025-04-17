@@ -9,6 +9,7 @@ import { AppDispatch, RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 
 export interface BasicUserInfo {
+  _id:string;
   userName: string;
   displayName: string;
   pfpSrc: string;
