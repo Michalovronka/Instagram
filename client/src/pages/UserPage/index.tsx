@@ -7,10 +7,11 @@ import useAuthentication, {
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
 import api from "../../api";
-import { useLocation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorContent from "../../components/ErrorContent/ErrorContent";
 import Loading from "../../components/Loading/Loading";
 import ProfileUpload from "../../components/ProfileUpload/ProfileUpload";
+import FollowPopUp from "../../components/FollowPopUp/FollowPopUp";
 
 //TODO: sm responsive
 interface ProfileInfo {
@@ -21,26 +22,69 @@ interface ProfileInfo {
   followers: String[];
 }
 
+type Sections = "Uploads" | "Saved";
+
 export default function UserPage() {
   const loggedInUser = useSelector((state: RootState) => state.loggedInUser);
   const { username } = useParams();
   const { isLoading } = useAuthentication();
-  const location = useLocation();
+  const navigate = useNavigate();
   const [isLoadingUser, setIsLoadingUser] = useState<Boolean>(true);
   const [user, setUser] = useState<BasicUserInfo | null>(null);
   const [profile, setProfile] = useState<ProfileInfo>();
   const [uploads, setUploads] = useState<string[]>([]);
+  const [saved, setSaved] = useState<string[]>([]);
+  const [section, setSection] = useState<Sections>("Uploads");
+  const [followersNumber, setFollowersNumber] = useState<number>(0);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [isFollowingFromStart, setIsFollowingFromStart] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoadingUser(true);
     fetchData();
-  }, [location]);
+  }, [username]);
+
+  useEffect(()=>{
+    const asyncIsFollowing = async () =>{
+      const response = await api.get(
+        `/profile/isFollowing/${loggedInUser.userName}/${username}`
+      );
+      if(response) {
+        setIsFollowing(true);
+        setIsFollowingFromStart(true)
+      }
+    }
+    if(loggedInUser.userName && username) asyncIsFollowing();
+  }, [loggedInUser, username])
+
+  const handleFolllowButton = async () => {
+    if(!loggedInUser.userName) navigate("/");
+    const isFollowingCurrently = !isFollowing;
+    try {
+      if (isFollowingCurrently) {
+        setFollowersNumber(isFollowingFromStart ? 0 : 1);
+        await api.post(
+          `/profile/addFollower/${loggedInUser.userName}/${username}`
+        );
+      } else {
+        setFollowersNumber(isFollowingFromStart ? -1 : 0);
+        await api.delete(
+          `/profile/deleteFollower/${loggedInUser.userName}/${username}`
+        );
+      }
+      setIsFollowing(!isFollowing);
+    } catch (err: unknown) {
+      console.error((err as { message?: string }).message || "Error");
+    }
+  };
 
   const fetchData = async () => {
     try {
       setUser(await api.get(`/user/${username}`));
       setProfile(await api.get(`/profile/${username}`));
       setUploads(await api.get(`/upload/getAllUploadsByUser/${username}`));
+      setSaved(await api.get(`/saved/getAllSavedByUser/${username}`));
+      setFollowersNumber(0);
     } catch (err: unknown) {
       console.error((err as { message?: string }).message || "Error");
     } finally {
@@ -48,10 +92,8 @@ export default function UserPage() {
     }
   };
 
-  //get user by id lol
-
   if (isLoading || isLoadingUser) return <Loading />;
-  if (!user) return <ErrorContent errorMessage="User not found" />;
+  if (!user || !profile) return <ErrorContent errorMessage="User not found" />;
 
   return (
     <>
@@ -75,15 +117,21 @@ export default function UserPage() {
                         <Button text="Edit profile" />
                         <Button text="View Archive" />
                       </div>
-                    ) : (
+                    ) : !isFollowing ? (
                       <div className="flex gap-3">
                         <button
-                          className="hover:bg-blue-500 bg-sky-400 text-white font-medium text-sm rounded-md p-1.5 mt-1.5"
+                          onClick={() => handleFolllowButton()}
+                          className="hover:bg-blue-500 bg-sky-400 text-white text-sm font-semibold rounded-lg py-2 px-4"
                         >
                           Follow
                         </button>
                         <Button text="Mesasage" />
                       </div>
+                    ) : (
+                      <>
+                        <Button onClick={handleFolllowButton} text="Following" />
+                        <Button text="Mesasage" />
+                      </>
                     )}
                     <button className="font-bold">...</button>
                   </div>
@@ -94,18 +142,9 @@ export default function UserPage() {
                     <span className="font-semibold">{uploads.length}</span>{" "}
                     posts
                   </div>
-                  <div>
-                    <span className="font-semibold">
-                      {profile?.followers.length}
-                    </span>{" "}
-                    followers
-                  </div>
-                  <div>
-                    <span className="font-semibold">
-                      {profile?.following.length}
-                    </span>{" "}
-                    following
-                  </div>
+
+                  <FollowPopUp users={profile.followers} type="Followers" profileUserName={username!} followersNumber={followersNumber}/>
+                  <FollowPopUp users={profile.following} type="Following" profileUserName={username!}/>
                 </div>
 
                 <div className="font-medium text-sm">{user?.displayName}</div>
@@ -140,26 +179,71 @@ export default function UserPage() {
           </div>
 
           <div className="my-5 flex gap-20 justify-center text-xs font-medium">
-            <button>POSTS</button>
-            {loggedInUser.userName === username && <button>SAVED</button>}
+            <button
+              className={`${section === "Uploads" && "font-bold"}`}
+              onClick={() => setSection("Uploads")}
+            >
+              POSTS
+            </button>
+            {loggedInUser.userName === username && (
+              <button
+                className={`${section === "Saved" && "font-bold"}`}
+                onClick={() => setSection("Saved")}
+              >
+                {" "}
+                SAVED
+              </button>
+            )}
             {/* WHEN LOGGED IN | AND ALSO ADD REELS */}
             {/*<button>TAGGED</button>*/}
           </div>
 
-          <div className="grid gap-1 grid-cols-3 pb-20">
-            {uploads &&
-              uploads
-                .slice()
-                .reverse()
-                .map((upload: string) => (
-                  <ProfileUpload
-                    key={upload}
-                    name={user.userName}
-                    pfpSrc={user.pfpSrc}
-                    uploadId={upload}
-                  />
-                ))}
-          </div>
+          {section === "Uploads" && uploads.length === 0 && (
+            <div className="flex justify-center mt-20 text-4xl">
+              No Uploads yet
+            </div>
+          )}
+          {section === "Uploads" && (
+            <div className="grid gap-1 grid-cols-3 pb-20">
+              {uploads &&
+                uploads
+                  .slice()
+                  .reverse()
+                  .map((upload: string) => (
+                    <ProfileUpload
+                      key={upload}
+                      loggedInUserUsername={loggedInUser.userName}
+                      name={user.userName}
+                      pfpSrc={user.pfpSrc}
+                      uploadId={upload}
+                    />
+                  ))}
+              {!saved && <div>Error loading Uploads...</div>}
+            </div>
+          )}
+          {section === "Saved" && saved.length === 0 && (
+            <div className="flex justify-center mt-20 text-4xl">
+              Nothing Saved yet
+            </div>
+          )}
+          {section === "Saved" && (
+            <div className="grid gap-1 grid-cols-3 pb-20">
+              {saved &&
+                saved
+                  .slice()
+                  .reverse()
+                  .map((upload: string) => (
+                    <ProfileUpload
+                      key={upload}
+                      loggedInUserUsername={loggedInUser.userName}
+                      name={user.userName}
+                      pfpSrc={user.pfpSrc}
+                      uploadId={upload}
+                    />
+                  ))}
+              {!saved && <div>Error loading Saved...</div>}
+            </div>
+          )}
         </div>
       </div>
     </>

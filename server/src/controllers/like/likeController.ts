@@ -13,8 +13,8 @@ export const createLike = async (
 ) => {
   const { contentId, username } = req.params;
 
-  const upload = await Upload.findOne({ _id: contentId });
-  const comment = await Comment.findOne({ _id: contentId });
+  const upload = await Upload.findById(contentId);
+  const comment = await Comment.findById(contentId);
 
   if (!upload && !comment) {
     return res.status(404).json({ message: "Content not found" });
@@ -22,11 +22,13 @@ export const createLike = async (
 
   const user = await User.findOne({ userName: username });
   if (!user) return res.status(500).send("User not found");
+
   const isLiked = await Like.findOne({
     likedBy: user._id,
     likeOnId: contentId,
   });
-
+  if(isLiked) return res.status(200).send("Already liked");
+  
   try {
     const newLike = new Like({
       likedBy: user._id,
@@ -34,13 +36,14 @@ export const createLike = async (
     });
     await newLike.save();
     if (upload) {
-      await Upload.findByIdAndUpdate(contentId, {
+       await Upload.findByIdAndUpdate(contentId, {
         $inc: { numberOfLikes: 1 },
       });
     } else if (comment) {
       await Comment.findByIdAndUpdate(contentId, {
-        $inc: { numberOfLikes: 1 },
-      });
+        $inc: { numberOfLikes: 1 }},
+        { new: true },
+      );
     } else {
       return res.status(404).json({ message: "Content not found" });
     }
@@ -109,9 +112,10 @@ export const isContentLiked = async (
       likeOnId: contentId,
     });
     if(isLiked) return res.status(200).send(true);
+    return res.status(200).send(false);
   } catch (error: any) {
     return res
       .status(500)
-      .json({ message: "Error creating Comment", error: error.message });
+      .json({ message: "Error checking Likes", error: error.message });
   }
 };

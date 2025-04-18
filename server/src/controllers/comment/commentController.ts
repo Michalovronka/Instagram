@@ -1,7 +1,5 @@
 import User from "../../models/users";
 import { Response, Request, NextFunction } from "express";
-import path from "path";
-import fs from "fs";
 import Comment from "../../models/interactions/comments";
 
 //GET, DELETE & UPDATE POST COMMENT
@@ -31,24 +29,6 @@ export const createComment = async (
   }
 };
 
-export const getAllCommentsFromUpload = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params;
-  try {
-    const comments = await Comment.find({ commentOnId: id });
-    if (!comments) return res.status(200).send("Comments not found");
-    const commentsIDs = comments.map((upload) => upload._id);
-    return res.status(200).send(commentsIDs);
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Error getting Comment", error: error.message });
-  }
-};
-
 export const getComment = async (
   req: Request,
   res: Response,
@@ -66,7 +46,7 @@ export const getComment = async (
       userPfp: user.pfpSrc,
       text: comment.text,
       dateOfCreation: comment.dateOfCreation,
-      numberOfLikes: 0,
+      numberOfLikes: comment.numberOfLikes,
     });
 
   } catch (error) {
@@ -76,6 +56,25 @@ export const getComment = async (
     });
   }
 };
+
+export const getAllCommentsFromContent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  try {
+    const comments = await Comment.find({ commentOnId: id });
+    if (!comments) return res.status(200).send("Comments not found");
+    const commentsIDs = comments.map((content) => content._id);
+    return res.status(200).send(commentsIDs);
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Error getting Comment", error: error.message });
+  }
+};
+
 /*
 
 

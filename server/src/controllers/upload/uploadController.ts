@@ -38,7 +38,6 @@ export const createUpload = [
   saveFileIntoFolder,
   async (req: Request, res: Response, next: NextFunction) => {
     const { uploadedByUserName, description } = req.body;
-    console.log(uploadedByUserName, description);
     if (!req.file) {
       return res.status(500).json({ message: "File didn't upload" });
     }
@@ -46,7 +45,6 @@ export const createUpload = [
     if (!user) {
       return res.status(404).send("User not found");
     }
-    console.log(user);
     try {
       const upload = new Upload({
         uploadedBy: user._id,
@@ -103,7 +101,6 @@ export const getAllUploadsByUser = async (
     const { username } = req.params
     const user = await User.findOne({ userName: username });
     if(!user) return res.status(404).send("User not found");
-    console.log(user._id)
 
     const uploads = await Upload.find({ uploadedBy: user._id });
     if(!uploads) return res.status(404).send("Uploads not found");

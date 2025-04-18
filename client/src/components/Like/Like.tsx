@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import api from "../../api";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   size: number;
@@ -11,6 +12,7 @@ interface Props {
 
 const Like: FC<Props> = ({ size, contentId, username, likes, setLikes }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(()=>{
     const checkIsLiked = async() =>{
@@ -19,6 +21,8 @@ const Like: FC<Props> = ({ size, contentId, username, likes, setLikes }) => {
     checkIsLiked();
   }, [contentId,username])
   const handleClick = async () => {
+
+    if(!username) navigate("/");
     const originalIsLiked = isLiked;
     const originalLikes = likes;
     const newIsLiked = !originalIsLiked;
@@ -26,11 +30,8 @@ const Like: FC<Props> = ({ size, contentId, username, likes, setLikes }) => {
     setIsLiked(newIsLiked);
     const newLikesCount = newIsLiked ? originalLikes + 1 : originalLikes - 1;
     setLikes(newLikesCount);
-
-
     try {
       if (newIsLiked) {
-        console.log("creatuju")
         await api.post(`/like/create/${contentId}/${username}`);
       } else {
         await api.delete(`/like/delete/${contentId}/${username}`);
