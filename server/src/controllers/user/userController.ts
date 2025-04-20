@@ -1,11 +1,13 @@
 import User from "../../models/users";
-import pfpController from "./pfpController";
 import { Response, Request, NextFunction } from "express";
 import Profile from "../../models/profiles";
-import fs from "fs";
 import path from "path";
 import { saveFileIntoFolder, deletePhoto } from "./pfpFileUploadUtils";
 import UserAuth from "../../models/userAuths";
+import Upload from "../../models/content/uploads";
+import Comment from "../../models/interactions/comments";
+import Like from "../../models/interactions/likes";
+import Saved from "../../models/interactions/saved";
 
 //GET, DELETE & UPDATE USER
 //DELETE & UPDATE WILL WORK WITH AUTHENTICATION - NO PARAMS
@@ -41,11 +43,12 @@ export const deleteUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const { userName } = req.params;
-    const userData = await User.findOne({ userName: userName });
 
-    const user = await User.findOneAndDelete({ userName: userName });
+  try {
+    const { username } = req.params;
+    const userData = await User.findOne({ userName: username });
+    
+    const user = await User.findOneAndDelete({ userName: username });
     if (!user || !userData) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -56,15 +59,31 @@ export const deleteUser = async (
         `../../../public/pfps/${userData.pfpSrc.substring(26)}`
       )
     );
+
     await Profile.deleteOne({ user: userData._id });
     await UserAuth.deleteOne({ referencesUser: userData._id });
+    await Comment.deleteMany({ commentedBy: userData._id})
+    await Like.deleteMany({likedBy: userData._id});
+    await Saved.deleteMany({savedBy: userData._id});
 
+    const uploads = await Upload.find({uploadedBy: userData._id});
+    await Upload.deleteMany({uploadedBy:userData._id});
+
+    for (const upload of uploads){
+      await Saved.deleteMany({savedOnId: upload._id});
+      await Like.deleteMany({likeOnId: upload._id});
+      await Comment.deleteMany({commentOnId: upload._id});
+      deletePhoto(
+        path.join(
+          __dirname,
+          `../../../public/uploads/${upload.contentSrc.substring(29)}`
+        )
+      );
+    }
+    
     //add uploads, stories, reels, likes, comments, savedContent?? when finished always - deleteMany all of them
 
-    res.status(200).json({
-      msg: `User ${user.userName} deleted successfully`,
-      payload: user,
-    });
+    return res.status(200).send(`User ${userData.userName} was deleted`);
   } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).json({ error: "Something went wrong" });

@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
-import Profile from "../models/profiles";
-import User from "../models/users";
+import Profile from "../../models/profiles";
+import User from "../../models/users";
+import { deletePhoto, saveFileIntoFolder } from "../user/pfpFileUploadUtils";
+import path from "path";
 // POST & DELETE ARE CONNECTED WITH USER
 // make updates if i want to add highlights, stories...
 
@@ -143,8 +145,7 @@ export const getAllFollowers = async (
     const profile = await Profile.findOne({ user: user._id });
     if (!profile) return res.status(500).send("Profile not found");
 
-    if (!profile.followers)
-      return res.status(404).send("Following not found");
+    if (!profile.followers) return res.status(404).send("Following not found");
 
     const usersdata: {
       userName: string;
@@ -210,3 +211,50 @@ export const getAllFollowing = async (
     });
   }
 };
+
+
+export const editProfile = [
+  saveFileIntoFolder,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { username } = req.params;
+    const { userName, displayName, bio } = req.body;
+    let oldFileName;
+    try {
+      const user = await User.findOne({ userName: username });
+      if (!user) return res.status(404).send("User not found");
+
+      if (userName) user.userName = userName;
+      if (displayName) user.displayName = displayName;
+      
+      if (req.file) {
+        oldFileName = user.pfpSrc.split('/').pop();
+        user.pfpSrc = "http://localhost:3000/pfps/" + req.file.filename;
+      }
+
+      await user.save();
+      if (req.file) {
+          await deletePhoto(path.join(__dirname, `../../../public/pfps/${oldFileName}`));
+      }
+
+      const profile = await Profile.findOne({ user: user._id });
+      if (!profile) return res.status(404).send("Profile not found");
+      if (bio) profile.bio = bio;
+
+      await profile.save();
+
+      return res.status(200).json({
+        userName:user.userName,
+        displayName:user.displayName,
+        pfpSrc:user.pfpSrc
+      });
+    } catch (error: any) {
+      if (req.file) {
+        await deletePhoto(path.join(__dirname, `../../../public/pfps/${req.file.filename}`));
+      }
+      res.status(500).json({
+        message: "Error updating profile",
+        error: error.message
+      });
+    }
+  },
+];

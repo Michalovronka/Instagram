@@ -37,28 +37,38 @@ export default function UserPage() {
   const [section, setSection] = useState<Sections>("Uploads");
   const [followersNumber, setFollowersNumber] = useState<number>(0);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  const [isFollowingFromStart, setIsFollowingFromStart] = useState<boolean>(false);
+  const [isFollowingFromStart, setIsFollowingFromStart] =
+    useState<boolean>(false);
 
   useEffect(() => {
+    setIsFollowing(false)
+    setIsFollowingFromStart(false)
     setIsLoadingUser(true);
     fetchData();
   }, [username]);
 
   useEffect(()=>{
-    const asyncIsFollowing = async () =>{
+    const getSaved = async()=>{
+      setSaved(await api.get(`/saved/getAllSavedByUser/${username}`))
+    }
+    if(section === "Saved") getSaved();
+  },[section])
+
+  useEffect(() => {
+    const asyncIsFollowing = async () => {
       const response = await api.get(
         `/profile/isFollowing/${loggedInUser.userName}/${username}`
       );
-      if(response) {
+      if (response) {
         setIsFollowing(true);
-        setIsFollowingFromStart(true)
+        setIsFollowingFromStart(true);
       }
-    }
-    if(loggedInUser.userName && username) asyncIsFollowing();
-  }, [loggedInUser, username])
+    };
+    if (loggedInUser.userName && username) asyncIsFollowing();
+  }, [loggedInUser, username]);
 
   const handleFolllowButton = async () => {
-    if(!loggedInUser.userName) navigate("/");
+    if (!loggedInUser.userName) navigate("/");
     const isFollowingCurrently = !isFollowing;
     try {
       if (isFollowingCurrently) {
@@ -114,10 +124,21 @@ export default function UserPage() {
                   <div className="flex flex-row gap-2">
                     {loggedInUser.userName === username ? (
                       <div className="flex gap-3">
-                        <Button text="Edit profile" />
+                        <Button
+                          onClick={() => navigate("/accounts/edit")}
+                          text="Edit profile"
+                        />
                         <Button text="View Archive" />
                       </div>
-                    ) : !isFollowing ? (
+                    ) : isFollowing ? (
+                      <>
+                        <Button
+                          onClick={handleFolllowButton}
+                          text="Following"
+                        />
+                        <Button text="Mesasage" />
+                      </>
+                    ) : (
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleFolllowButton()}
@@ -127,11 +148,6 @@ export default function UserPage() {
                         </button>
                         <Button text="Mesasage" />
                       </div>
-                    ) : (
-                      <>
-                        <Button onClick={handleFolllowButton} text="Following" />
-                        <Button text="Mesasage" />
-                      </>
                     )}
                     <button className="font-bold">...</button>
                   </div>
@@ -143,8 +159,17 @@ export default function UserPage() {
                     posts
                   </div>
 
-                  <FollowPopUp users={profile.followers} type="Followers" profileUserName={username!} followersNumber={followersNumber}/>
-                  <FollowPopUp users={profile.following} type="Following" profileUserName={username!}/>
+                  <FollowPopUp
+                    users={profile.followers}
+                    type="Followers"
+                    profileUserName={username!}
+                    followersNumber={followersNumber}
+                  />
+                  <FollowPopUp
+                    users={profile.following}
+                    type="Following"
+                    profileUserName={username!}
+                  />
                 </div>
 
                 <div className="font-medium text-sm">{user?.displayName}</div>

@@ -25,7 +25,7 @@ export const deletePhoto = async (filePath: string) =>{
   try {
     await fs.promises.unlink(filePath);
   } catch (err) {
-    //console.error(err);
-    throw new Error("Failed to delete profile photo");
+    console.log("Error with Deleting Image / Video")
+    console.error(err); 
   }
 }

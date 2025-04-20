@@ -5,6 +5,7 @@ import UserPage from "./UserPage";
 import ExplorePage from "./ExplorePage";
 import RegisterPage from "./RegisterPage";
 import UploadPage from "./UploadPage";
+import EditProfilePage from "./EditProfilePage/EditProfilePage";
 
 export default function Approutes() {
   return (
@@ -13,6 +14,7 @@ export default function Approutes() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/accounts/emailsignup/" element={<RegisterPage />} />
+          <Route path="/accounts/edit/" element={<EditProfilePage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/:username" element={<UserPage />} />
           <Route path="/explore/" element={<ExplorePage />} />

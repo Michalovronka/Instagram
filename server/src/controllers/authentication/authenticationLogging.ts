@@ -34,8 +34,10 @@ export const LogIn = async (req: Request, res: Response, next: NextFunction) => 
 };
 
 export const LogOut = async (req: Request, res: Response, next: NextFunction) => {
-  res.clearCookie("refreshtoken");
-  return res.json({
-    message: "Log out successful"
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    sameSite: "strict",
+    path: "/",        
   });
+  return res.status(200).send("Logout succesfull");
 }

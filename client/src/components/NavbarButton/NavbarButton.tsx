@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../store";
+import api from "../../api";
 
 export type NavbarButtonProps = {
   src: string;
@@ -20,13 +21,16 @@ export type navbarItemsType =
   | "Notifications"
   | "Create"
   | "Profile"
-  | "Threads"
   | "More";
 
 function NavbarButton(props: NavbarButtonProps) {
   const loggedInUser = useSelector((state: RootState) => state.loggedInUser);
   const navigate = useNavigate();
+  const logOut = async () => {
+    await api.post("/auth/logOut");
 
+    window.location.reload();
+  };
   function handleOnClick() {
     switch (props.text) {
       case "Instagram":
@@ -51,7 +55,7 @@ function NavbarButton(props: NavbarButtonProps) {
       case "Notifications":
         break;
       case "Create":
-        navigate("/upload")
+        navigate("/upload");
         window.scrollTo({
           top: 0,
         });
@@ -62,11 +66,10 @@ function NavbarButton(props: NavbarButtonProps) {
           top: 0,
         });
         break;
-      case "Threads":
-        break;
       case "More":
+        logOut();
         break;
-    } 
+    }
   }
 
   return (
@@ -76,7 +79,7 @@ function NavbarButton(props: NavbarButtonProps) {
         onClick={handleOnClick}
       >
         <img
-          className={`w-6 h-6 md:group-hover:scale-110 transition-transform duration-300 ease-in-out hover:scale-110 cursor-pointer | md:mr-4 | ${props.logoImg}`}
+          className={`w-6 rounded-full h-6 md:group-hover:scale-110 transition-transform duration-300 ease-in-out hover:scale-110 cursor-pointer | md:mr-4 | ${props.logoImg}`}
           src={props.src}
           alt="button icon"
         />

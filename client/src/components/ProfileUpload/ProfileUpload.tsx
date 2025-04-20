@@ -35,6 +35,7 @@ export default function ProfileUpload({
   const [comments, setComments] = useState<any[]>();
   const [likes, setLikes] = useState<number>(0);
   const [commentTargetId, setCommentTargetId] = useState<string>(uploadId);
+  const [numberOfReplies, setNumberOfReplies] = useState<number>(0);
 
   const navigate = useNavigate();
 
@@ -96,6 +97,7 @@ export default function ProfileUpload({
         commentedBy: loggedInUserUsername,
       });
       if(commentTargetId === uploadId)comments?.push(newComment); 
+      else setNumberOfReplies(numberOfReplies+1);
       setCommentText("");
     } catch (err: unknown) {
       const error = err as { message?: string };
@@ -132,11 +134,11 @@ export default function ProfileUpload({
           <button
             onClick={() => setIsUploadOpen(false)}
             className="absolute top-0 right-0 mt-
-              mt-3 mr-5 text-xl text-white"
+              mt-3 mr-5 text-xl  text-white"
           >
             X
           </button>
-          <div className="bg-transparent max-sm:w-full max-sm:h-full w-[70%] h-[95%] relative">
+          <div className="bg-transparent max-md:w-[90%] max-md:h-[80%] w-[70%] h-[95%] relative">
             <div className="flex h-full items-stretch">
               <div className="w-1/2 flex items-center justify-center h-full bg-black">
                 <img
@@ -148,7 +150,7 @@ export default function ProfileUpload({
 
               <div className="w-1/2 bg-white flex flex-col h-full relative">
                 <div className="p-4 flex justify-between border-b font-medium text-sm border-slate-300 w-full">
-                  <Link to={`/`} className="flex items-center">
+                  <Link to={`/${name}`} className="flex items-center">
                     <img
                       className="w-8 h-8 rounded-full object-cover"
                       src={pfpSrc}
@@ -165,7 +167,7 @@ export default function ProfileUpload({
                   <div className="p-4">
                     <div className="flex flex-col">
                       <div className="flex">
-                        <Link to="/" className="flex-shrink-0">
+                        <Link to={`/${name}`} className="flex-shrink-0">
                           <img
                             className="w-8 h-8 rounded-full object-cover bg-blue-800"
                             src={pfpSrc}
@@ -202,6 +204,7 @@ export default function ProfileUpload({
                           commentId={comment}
                           username={loggedInUserUsername}
                           replyId={setCommentTargetId}
+                          numberOfReplies={numberOfReplies}
                         />
                       ))}
                   </div>

@@ -17,14 +17,19 @@ interface Props {
   username: string;
   replyId: (commentId: string) => void;
   replyToReply?: string;
+  numberOfReplies?: number;
 }
 
-const Comment: FC<Props> = ({ commentId, username, replyId, replyToReply }) => {
+const Comment: FC<Props> = ({ commentId, username, replyId, replyToReply, numberOfReplies }) => {
   const [isCommentLoading, setIsCommentLoading] = useState<boolean>(true);
   const [commentData, setCommentData] = useState<CommentData>();
   const [likes, setLikes] = useState<number>(0);
   const [replies, setReplies] = useState<string[]>([]);
   const [isRepliesOpen, setIsRepliesOpen] = useState<boolean>(false);
+
+  useEffect(()=>{
+    getReplies();
+  },[numberOfReplies])
 
   useEffect(() => {
     const getCommentData = async () => {
@@ -41,21 +46,22 @@ const Comment: FC<Props> = ({ commentId, username, replyId, replyToReply }) => {
       }
     };
 
-    const getReplies = async () => {
-      try {
-        setReplies(await api.get(`comment/allOnContent/${commentId}`));
-      } catch (err: unknown) {
-        const error = err as {
-          message?: string;
-        };
-        console.error(error || "Error loading Comment");
-      }
-    };
     getCommentData();
-    getReplies();
+
     setIsCommentLoading(false);
   }, [commentId]);
 
+  const getReplies = async () => {
+    try {
+      setReplies(await api.get(`comment/allOnContent/${commentId}`));
+    } catch (err: unknown) {
+      const error = err as {
+        message?: string;
+      };
+      console.error(error || "Error loading Comment");
+    }
+  };
+  
   if (isCommentLoading) return <> Loading...</>;
   if (!commentData) return <>Error Loading comment</>;
 
@@ -100,7 +106,7 @@ const Comment: FC<Props> = ({ commentId, username, replyId, replyToReply }) => {
               onClick={() => setIsRepliesOpen(!isRepliesOpen)}
               className="mt-3 text-xs font-medium text-slate-500"
             >
-              View Replies
+              {isRepliesOpen ? "Close Replies" : "View Replies"}
             </button>}
           </div>
         </div>

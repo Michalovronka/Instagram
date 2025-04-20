@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import { Link } from "react-router-dom";
 
 interface Props {
   users: String[];
@@ -55,22 +56,24 @@ export default function FollowPopUp(props: Props) {
             <div className="max-h-[200px] overflow-y-auto pr-4">
               {!isLoadingUsers && loadedUsers.length > 0 ? (
                 loadedUsers.map((user: UserData, index: number) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 py-2 border-b"
-                  >
-                    <img
-                      src={user.pfpSrc}
-                      alt={`${user.displayName}'s profile`}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="font-semibold">{user.displayName}</div>
-                      <div className="text-sm text-gray-500">
-                        {user.userName}
+                  <Link to={`/${user.userName}`}>
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 py-2 border-b"
+                    >
+                      <img
+                        src={user.pfpSrc}
+                        alt={`${user.displayName}'s profile`}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="font-semibold">{user.userName}</div>
+                        <div className="text-sm text-gray-500">
+                          {user.displayName}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <> No {props.type} yet :/</>

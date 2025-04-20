@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface BasicUserInfo {
-  _id:string;
+  _id: string;
   userName: string;
   displayName: string;
   pfpSrc: string;
 }
 
 const initialState: BasicUserInfo = {
-  _id:"",
+  _id: "",
   userName: "",
   displayName: "",
   pfpSrc: "",
@@ -19,9 +19,7 @@ const loggedInUserSlice = createSlice({
   initialState,
   reducers: {
     setLoggedInUser: (state, action: PayloadAction<BasicUserInfo>) => {
-      if (state.userName.length === 0) {
-        return { ...state, ...action.payload };
-      }
+      return { ...state, ...action.payload };
     },
     setDefaultUserValue: (state) => {
       state._id = "";

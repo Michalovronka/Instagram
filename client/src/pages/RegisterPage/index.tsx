@@ -71,7 +71,7 @@ export default function RegisterPage() {
       console.log("Selected file:", e.target.files[0]);
       setFormData({
         ...formData,
-        pfpFile: e.target.files[0], // Store the file properly
+        pfpFile: e.target.files[0], 
       });
     }
   };

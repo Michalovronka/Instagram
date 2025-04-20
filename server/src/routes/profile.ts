@@ -1,5 +1,5 @@
 import express from "express";
-import { addFollowing, checkIsFollowing, deleteFollowing, getAllFollowers, getAllFollowing, getProfile } from "../controllers/profileController";
+import { addFollowing, checkIsFollowing, deleteFollowing, editProfile, getAllFollowers, getAllFollowing, getProfile } from "../controllers/profile/profileController";
 
 const router = express.Router();
 
@@ -12,5 +12,6 @@ router.delete("/deleteFollower/:loggedInUsername/:profileUsername", deleteFollow
 router.get("/isFollowing/:loggedInUsername/:profileUsername", checkIsFollowing as any);
 router.get("/getAllFollowers/:username", getAllFollowers as any);
 router.get("/getAllFollowing/:username", getAllFollowing as any);
+router.patch("/edit/:username", editProfile as any);
 
 export default router;
