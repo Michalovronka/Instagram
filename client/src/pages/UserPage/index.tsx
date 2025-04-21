@@ -10,7 +10,7 @@ import api from "../../api";
 import { useNavigate, useParams } from "react-router-dom";
 import ErrorContent from "../../components/ErrorContent/ErrorContent";
 import Loading from "../../components/Loading/Loading";
-import ProfileUpload from "../../components/ProfileUpload/ProfileUpload";
+import Upload from "../../components/Upload/Upload";
 import FollowPopUp from "../../components/FollowPopUp/FollowPopUp";
 
 //TODO: sm responsive
@@ -235,12 +235,13 @@ export default function UserPage() {
                   .slice()
                   .reverse()
                   .map((upload: string) => (
-                    <ProfileUpload
+                    <Upload
                       key={upload}
                       loggedInUserUsername={loggedInUser.userName}
                       name={user.userName}
                       pfpSrc={user.pfpSrc}
                       uploadId={upload}
+                      type={"Profile"}
                     />
                   ))}
               {!saved && <div>Error loading Uploads...</div>}
@@ -258,12 +259,13 @@ export default function UserPage() {
                   .slice()
                   .reverse()
                   .map((upload: string) => (
-                    <ProfileUpload
+                    <Upload
                       key={upload}
                       loggedInUserUsername={loggedInUser.userName}
                       name={user.userName}
                       pfpSrc={user.pfpSrc}
                       uploadId={upload}
+                      type={"Profile"}
                     />
                   ))}
               {!saved && <div>Error loading Saved...</div>}

@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import Upload from "../../models/content/uploads";
 import mongoose from "mongoose";
+import Profile from "../../models/profiles";
 
 //GET, DELETE & UPDATE POST UPLOAD
 // need some authentiacaion middleware that check if you can delete i think
@@ -65,7 +66,6 @@ export const createUpload = [
   },
 ];
 
-
 export const getUpload = async (
   req: Request,
   res: Response,
@@ -76,6 +76,7 @@ export const getUpload = async (
     const upload = await Upload.findOne({ _id: id });
     if (upload) {
       return res.status(200).json({
+        uploadedBy:upload.uploadedBy,
         contentSrc: upload.contentSrc,
         description: upload.description,
         dateOfCreation: upload.dateOfCreation,
@@ -98,12 +99,12 @@ export const getAllUploadsByUser = async (
   next: NextFunction
 ) => {
   try {
-    const { username } = req.params
+    const { username } = req.params;
     const user = await User.findOne({ userName: username });
-    if(!user) return res.status(404).send("User not found");
+    if (!user) return res.status(404).send("User not found");
 
     const uploads = await Upload.find({ uploadedBy: user._id });
-    if(!uploads) return res.status(404).send("Uploads not found");
+    if (!uploads) return res.status(404).send("Uploads not found");
     const uploadsId = uploads.map((upload) => upload._id);
     return res.status(200).json(uploadsId);
   } catch (error) {
@@ -165,6 +166,44 @@ export const updateUpload = async (
       msg: "Upload updated successfully",
       payload: updatedUpload,
     });
+  } catch (error) {
+    console.error("Error updating upload:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const getAllUploadsByFollowedUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ userName: username });
+    if (!user) return res.status(404).send("User not found");
+
+    const profile = await Profile.findOne({ user: user._id });
+    if (!profile) return res.status(404).send("User not found");
+
+    const allFollowedUsersUploads = [];
+
+    for (const followedUser of profile.following) {
+      const uploads = await Upload.find({ uploadedBy: followedUser });
+      if (!uploads) return res.status(404).send("Uploads not found");
+      const uploadsId = uploads.map((upload) => upload._id);
+      allFollowedUsersUploads.push(...uploadsId);
+    }
+    allFollowedUsersUploads.sort((a, b) => {
+      const timestampA = new mongoose.Types.ObjectId(a)
+        .getTimestamp()
+        .getTime();
+      const timestampB = new mongoose.Types.ObjectId(b)
+        .getTimestamp()
+        .getTime();
+      return timestampA - timestampB;
+    });
+
+    return res.status(200).send(allFollowedUsersUploads);
   } catch (error) {
     console.error("Error updating upload:", error);
     res.status(500).json({ error: "Something went wrong" });

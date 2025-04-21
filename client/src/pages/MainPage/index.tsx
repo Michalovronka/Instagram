@@ -1,8 +1,8 @@
 import Navbar from "../../components/Navbar/Navbar";
-import MainPagePost from "../../components/MainPagePost/MainPagePost";
+import Upload from "../../components/Upload/Upload";
 import StoriesBar from "./StoriesBar";
 import DownloadSection from "../../components/DownloadSection/DownloadSection";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -12,7 +12,6 @@ import useAuthentication from "../../hooks/useAuthentication";
 
 //TODO : make the switch account work (on the right side)
 //       make the posts load from database and load from it
-
 
 //fix image src plss :)
 //fix image src plss :)
@@ -33,13 +32,28 @@ const instagramLinks: InstagramLink[] = [
   { link: "https://about.instagram.com/", keyword: "About" },
   { link: "https://help.instagram.com/", keyword: "Help" },
   { link: "https://about.instagram.com/blog", keyword: "Press" },
-  { link: "https://developers.facebook.com/docs/instagram-platform",keyword: "API",},
+  {
+    link: "https://developers.facebook.com/docs/instagram-platform",
+    keyword: "API",
+  },
   { link: "https://about.instagram.com/about-us/careers", keyword: "Jobs" },
-  { link: "https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect",keyword: "Privacy",},
+  {
+    link: "https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect",
+    keyword: "Privacy",
+  },
   { link: "https://help.instagram.com/581066165581870/", keyword: "Terms" },
-  { link: "https://www.instagram.com/explore/locations/",keyword: "Locations",}, // mozna udelej nastaveni loool
-  { link: "https://www.instagram.com/language/preferences/", keyword: "Laungage",}, //mozna udelej nastaveni loool
-  { link: "https://accountscenter.instagram.com/meta_verified/?entrypoint=web_footer",keyword: "Meta Verified",},
+  {
+    link: "https://www.instagram.com/explore/locations/",
+    keyword: "Locations",
+  }, // mozna udelej nastaveni loool
+  {
+    link: "https://www.instagram.com/language/preferences/",
+    keyword: "Laungage",
+  }, //mozna udelej nastaveni loool
+  {
+    link: "https://accountscenter.instagram.com/meta_verified/?entrypoint=web_footer",
+    keyword: "Meta Verified",
+  },
 ];
 
 const loginLinks: InstagramLink[] = [
@@ -50,27 +64,61 @@ const loginLinks: InstagramLink[] = [
   { link: "https://help.instagram.com/", keyword: "Nápověda" },
   { link: "https://developers.facebook.com/docs/instagram", keyword: "API" },
   { link: "https://www.instagram.com/legal/privacy/", keyword: "Soukromí" },
-  { link: "https://www.instagram.com/privacy/cookie_settings/", keyword: "Nastavení souborů cookie" },
+  {
+    link: "https://www.instagram.com/privacy/cookie_settings/",
+    keyword: "Nastavení souborů cookie",
+  },
   { link: "https://www.instagram.com/legal/terms/", keyword: "Podmínky" },
   { link: "https://www.instagram.com/explore/locations/", keyword: "Lokality" },
   { link: "https://www.instagram.com/web/lite/", keyword: "Instagram Lite" },
   { link: "https://www.threads.net/", keyword: "Threads" },
-  { link: "https://www.facebook.com/help/instagram/261704639352628", keyword: "Nahrávání kontaktů a osoby, které nejsou uživatelé" },
-  { link: "https://www.instagram.com/accounts/meta_verified/?entrypoint=web_footer", keyword: "Meta Verified" },
+  {
+    link: "https://www.facebook.com/help/instagram/261704639352628",
+    keyword: "Nahrávání kontaktů a osoby, které nejsou uživatelé",
+  },
+  {
+    link: "https://www.instagram.com/accounts/meta_verified/?entrypoint=web_footer",
+    keyword: "Meta Verified",
+  },
 ];
 
 function MainPage() {
-  
-  const isAuthenticated = useSelector((state: RootState) => state.auth.value, shallowEqual);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.value,
+    shallowEqual
+  );
   const loggedInUser = useSelector((state: RootState) => state.loggedInUser);
   const [errorInfo, setErrorInfo] = useState<String>("");
   const [formData, setFormData] = useState({
     emailLogin: "",
     passwordLogin: "",
-  });                      
+  });
+
+  const [uploads, setUploads] = useState<string[]>([]);
 
   const { isLoading, authenticateUser } = useAuthentication();
- 
+
+  useEffect(() => {
+    const getUploads = async () => {
+     
+      try {
+        console.log("eee")
+        setUploads(
+          await api.get(
+            `/upload/getAllUploadsByFollowedUsers/${loggedInUser.userName}`
+          )
+        );
+        console.log("uuuuuu")
+      } catch (err: unknown) {
+        const error = err as {
+          message?: string;
+        };
+        console.log(error.message || "Upload loading failed");
+      }
+    };
+    if (isAuthenticated) getUploads();
+  }, [isAuthenticated]);
+
   const postForm = async () => {
     if (!formData) return;
     try {
@@ -78,7 +126,7 @@ function MainPage() {
         email: formData.emailLogin,
         password: formData.passwordLogin,
       });
-      authenticateUser(); 
+      authenticateUser();
     } catch (err: unknown) {
       const error = err as {
         message?: string;
@@ -109,7 +157,9 @@ function MainPage() {
           />
           <div className="w-1/2 mx-7 text-sm">
             <div className="border border-slate-300">
-              <div className="font-grandhotel p-11 text-5xl m-auto text-center">Instagram</div>
+              <div className="font-grandhotel p-11 text-5xl m-auto text-center">
+                Instagram
+              </div>
 
               <form className="flex flex-col px-12 gap-2">
                 <input
@@ -156,7 +206,10 @@ function MainPage() {
             <div>
               <div className="mt-2 p-5 text-center border border-slate-300 ">
                 Nemáte účet?
-                <Link to={"/accounts/emailsignup/"} className="text-sky-400 font-medium">
+                <Link
+                  to={"/accounts/emailsignup/"}
+                  className="text-sky-400 font-medium"
+                >
                   Zaregistrujte se
                 </Link>
               </div>
@@ -166,16 +219,15 @@ function MainPage() {
         </div>
         <div className="flex flex-col text-center mt-16 m-auto w-[74rem] text-slate-500 text-xs">
           <div className="flex justify-between w-full ">
-          {loginLinks.map((item, index) => {
-            return (
-              <React.Fragment key={`${item.keyword}-${index}`}>
-                <a className="hover:underline" href={item.link}>
-                  {item.keyword}
-                </a>
-              </React.Fragment>
-            );
-          })}
-          
+            {loginLinks.map((item, index) => {
+              return (
+                <React.Fragment key={`${item.keyword}-${index}`}>
+                  <a className="hover:underline" href={item.link}>
+                    {item.keyword}
+                  </a>
+                </React.Fragment>
+              );
+            })}
           </div>
           <p className="pt-6"> © 2025 Instagram from Michal Dvořák </p>
         </div>
@@ -183,7 +235,6 @@ function MainPage() {
     );
   }
 
-  //dejto aby tu ukazovalu username
   if (isAuthenticated && !isLoading) {
     return (
       <>
@@ -217,9 +268,20 @@ function MainPage() {
                 <StoriesBar />
               </div>
               <div className="md:px-20 | max-md:mx-auto ">
-                <MainPagePost />
-                <MainPagePost />
-                <MainPagePost />
+
+                {uploads &&
+                  uploads
+                    .slice()
+                    .reverse()
+                    .map((upload: string) => (
+                      <Upload
+                        key={upload}
+                        loggedInUserUsername={loggedInUser.userName}
+                        uploadId={upload}
+                        type={"MainPage"}
+                      />
+                    ))}
+
               </div>
             </div>
 
@@ -231,7 +293,9 @@ function MainPage() {
                 />
                 <div className="flex-col">
                   <div>{loggedInUser.userName}</div>
-                  <div className="text-stone-400">{loggedInUser.displayName}</div>
+                  <div className="text-stone-400">
+                    {loggedInUser.displayName}
+                  </div>
                 </div>
                 <button className="ml-auto h-12 text-blue-500 text-xs text-normal">
                   Switch

@@ -21,7 +21,7 @@ export interface UploadDataType {
   numberOfLikes: number;
 }
 
-export default function ProfileUpload({
+export default function Upload({
   name,
   pfpSrc,
   uploadId,

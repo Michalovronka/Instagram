@@ -73,8 +73,8 @@ export const deleteLike = async (
 
     if (!deletedLike) return res.status(505).json({ msg: "Like not deleted" });
 
-    const upload = await Upload.findOne({ _id: contentId });
-    const comment = await Comment.findOne({ _id: contentId });
+    const upload = await Upload.findById(contentId);
+    const comment = await Comment.findById(contentId);
 
     if (upload) {
       await Upload.findByIdAndUpdate(contentId, {

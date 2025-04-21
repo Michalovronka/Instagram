@@ -1,5 +1,5 @@
 import express from "express";
-import { getUpload, createUpload, getAllUploadsByUser} from "../controllers/upload/uploadController";
+import { getUpload, createUpload, getAllUploadsByUser, getAllUploadsByFollowedUsers} from "../controllers/upload/uploadController";
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get("/:id", getUpload as any);
 router.get("/getAllUploadsByUser/:username", getAllUploadsByUser as any);
+router.get("/getAllUploadsByFollowedUsers/:username", getAllUploadsByFollowedUsers as any);
 router.post("/createUpload", createUpload)
 router.patch("/:id");
 router.delete("/:id");
