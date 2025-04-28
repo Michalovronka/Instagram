@@ -172,7 +172,7 @@ export default function EditProfilePage() {
             </button>
           </form>
 
-          <form>
+          <form className="mb-20">
             <div className="flex gap-3 mt-10 justify-center text-sm ">
               <button
                 onClick={deleteUser}

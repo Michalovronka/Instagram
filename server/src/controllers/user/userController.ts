@@ -63,6 +63,23 @@ export const getUserById = async (
   }
 };
 
+export const searchUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { username } = req.params;
+    const users = await User.find({
+      userName: { $regex: username, $options: "i" },
+    }); 
+    return res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Searching error" });
+  }
+}
+
+
 export const deleteUser = async (
   req: Request,
   res: Response,

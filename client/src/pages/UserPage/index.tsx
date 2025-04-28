@@ -103,7 +103,7 @@ export default function UserPage() {
   };
 
   if (isLoading || isLoadingUser) return <Loading />;
-  if (!user || !profile) return <ErrorContent errorMessage="User not found" />;
+  if (!user || !profile) return <ErrorContent />;
 
   return (
     <>
@@ -182,7 +182,7 @@ export default function UserPage() {
                   className="max-w-20 max-h-20"
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
                 ></img>
-                <div className="text-xs font-semibold text-center">Franta</div>
+                <div className="text-xs font-semibold text-center">Test</div>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -190,7 +190,7 @@ export default function UserPage() {
                   className="max-w-20 max-h-20"
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
                 ></img>
-                <div className="text-xs font-semibold text-center">Franta</div>
+                <div className="text-xs font-semibold text-center">Test</div>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -198,7 +198,7 @@ export default function UserPage() {
                   className="max-w-20 max-h-20"
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
                 ></img>
-                <div className="text-xs font-semibold text-center">Franta</div>
+                <div className="text-xs font-semibold text-center">Test</div>
               </div>
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function UserPage() {
             </div>
           )}
           {section === "Uploads" && (
-            <div className="grid gap-1 grid-cols-3 pb-20">
+            <div className="grid gap-1 sm:grid-cols-3 grid-cols-2 pb-20">
               {uploads &&
                 uploads
                   .slice()
@@ -244,7 +244,7 @@ export default function UserPage() {
                       type={"Profile"}
                     />
                   ))}
-              {!saved && <div>Error loading Uploads...</div>}
+              {!uploads && <div>Error loading Uploads...</div>}
             </div>
           )}
           {section === "Saved" && saved.length === 0 && (
@@ -253,7 +253,7 @@ export default function UserPage() {
             </div>
           )}
           {section === "Saved" && (
-            <div className="grid gap-1 grid-cols-3 pb-20">
+            <div className="grid gap-1 sm:grid-cols-3 grid-cols-2 pb-20">
               {saved &&
                 saved
                   .slice()

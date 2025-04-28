@@ -6,12 +6,12 @@ import { formatDistance } from "date-fns";
 import Like from "../Like/Like";
 import Saved from "../Saved/Saved";
 
-interface ProfileUploadProps {
+interface UploadProps {
   name?: string;
   pfpSrc?: string;
   uploadId: string;
   loggedInUserUsername: string;
-  type: "MainPage" | "Profile";
+  type: "MainPage" | "Profile" | "Explore";
 }
 
 export interface UploadDataType {
@@ -29,7 +29,7 @@ export default function Upload({
   uploadId,
   loggedInUserUsername,
   type,
-}: ProfileUploadProps) {
+}: UploadProps) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
@@ -146,7 +146,7 @@ export default function Upload({
             <div className="flex items-center">
               <img
                 src={mainPageUserData.pfpSrc}
-                className="w-12 rounded-full p-2"
+                className="w-12 h-12 rounded-full p-2 object-cover"
                 alt="no img"
               />
               <Link
@@ -160,7 +160,7 @@ export default function Upload({
             <div className="flex flex-col rounded-md items-center justify-center h-[520px] bg-black">
               <img
                 src={uploadData.contentSrc}
-               
+                className="h-[520px] object-contain"
               ></img>
             </div>
 
@@ -225,11 +225,11 @@ export default function Upload({
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center h-[25rem] bg-gray-100">
+        <div className={`flex flex-col items-center justify-center ${type==="Profile" ? "h-[25rem]" : "max-h-[20rem] max-w-[20rem]"} bg-gray-100`}>
           <img
             src={uploadData.contentSrc}
             onClick={() => setIsUploadOpen(true)}
-            className="max-h-[25rem] hover:brightness-50 hover:cursor-pointer active:opacity-60 active:brightness-100"
+            className={`${type==="Profile" ? "max-h-[25rem]" : "max-h-[20rem]"} hover:brightness-50 hover:cursor-pointer active:opacity-60 active:brightness-100`}
           />
         </div>
       )}

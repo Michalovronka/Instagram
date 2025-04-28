@@ -76,7 +76,7 @@ export const getUpload = async (
     const upload = await Upload.findOne({ _id: id });
     if (upload) {
       return res.status(200).json({
-        uploadedBy:upload.uploadedBy,
+        uploadedBy: upload.uploadedBy,
         contentSrc: upload.contentSrc,
         description: upload.description,
         dateOfCreation: upload.dateOfCreation,
@@ -106,6 +106,23 @@ export const getAllUploadsByUser = async (
     const uploads = await Upload.find({ uploadedBy: user._id });
     if (!uploads) return res.status(404).send("Uploads not found");
     const uploadsId = uploads.map((upload) => upload._id);
+    return res.status(200).json(uploadsId);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      error: error,
+    });
+  }
+};
+
+export const getRandomUploads = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const randomUploads = await Upload.aggregate([{ $sample: { size: 6 } }]);
+    const uploadsId = randomUploads.map((upload) => upload._id);
     return res.status(200).json(uploadsId);
   } catch (error) {
     console.log(error);

@@ -8,7 +8,7 @@ export default function StoriesBar() {
             className="w-14 rounded-full mb-2"
             alt=""
           />
-          <div className="text-xs text-center text-slate-500">skibidi</div>
+          <div className="text-xs text-center text-slate-500">test</div>
         </div>
         <div>
           <img
@@ -16,7 +16,7 @@ export default function StoriesBar() {
             className="w-14 rounded-full mb-2"
             alt=""
           />
-          <div className="text-xs text-center text-slate-500">skibidi</div>
+          <div className="text-xs text-center text-slate-500">test</div>
         </div>
         <div>
           <img
@@ -24,7 +24,7 @@ export default function StoriesBar() {
             className="w-14 rounded-full mb-2"
             alt=""
           />
-          <div className="text-xs text-center text-slate-500">skibidi</div>
+          <div className="text-xs text-center text-slate-500">test</div>
         </div>
         <div>
           <img
@@ -32,7 +32,7 @@ export default function StoriesBar() {
             className="w-14 rounded-full mb-2"
             alt=""
           />
-          <div className="text-xs text-center text-slate-500">skibidi</div>
+          <div className="text-xs text-center text-slate-500">test</div>
         </div>
       </div>
     </>

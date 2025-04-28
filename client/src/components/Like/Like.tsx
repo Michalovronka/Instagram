@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from "react";
 import api from "../../api";
 import { useNavigate } from "react-router-dom";
 
+//svg source: https://www.iconpacks.net/free-icon/heart-3510.html
+
 interface Props {
   size: number;
   contentId: string;

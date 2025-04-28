@@ -1,7 +1,6 @@
 import express from "express";
-import { getUser, updateUser, updatePfp, deleteUser, getUserById } from "../controllers/user/userController";
+import { getUser, updateUser, updatePfp, deleteUser, getUserById, searchUsers } from "../controllers/user/userController";
 import { registerUser } from "../controllers/user/registration";
-import { LogIn } from "../controllers/authentication/authenticationLogging";
 
 const router = express.Router();
 
@@ -9,6 +8,7 @@ const router = express.Router();
 
 router.get("/:username", getUser as any);
 router.get("/getById/:id", getUserById as any);
+router.get("/search/:username", searchUsers as any);
 router.patch("/updateInfo/:username", updateUser as any);
 router.patch("/updatePfp/:username", updatePfp);
 router.post("/registration", registerUser);

@@ -100,9 +100,7 @@ function MainPage() {
 
   useEffect(() => {
     const getUploads = async () => {
-     
       try {
-        console.log("eee")
         setUploads(
           await api.get(
             `/upload/getAllUploadsByFollowedUsers/${loggedInUser.userName}`
